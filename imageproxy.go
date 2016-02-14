@@ -248,6 +248,19 @@ func check304(req *http.Request, resp *http.Response) bool {
 	return false
 }
 
+func checkMimeType(buffer []byte) error {
+
+	mimeTypes := []string{"image/jpeg", "image/gif", "image/png"}
+
+	for _, mimetype := range mimeTypes {
+		if http.DetectContentType(buffer) == mimetype {
+			return nil
+		}
+	}
+
+	return http.ErrBodyNotAllowed
+}
+
 // TransformingTransport is an implementation of http.RoundTripper that
 // optionally transforms images using the options specified in the request URL
 // fragment.
@@ -279,6 +292,11 @@ func (t *TransformingTransport) RoundTrip(req *http.Request) (*http.Response, er
 
 	defer resp.Body.Close()
 	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	err = checkMimeType(b)
 	if err != nil {
 		return nil, err
 	}
