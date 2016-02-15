@@ -52,6 +52,10 @@ type Proxy struct {
 	// hosts are allowed.
 	Referrers []string
 
+	// MIMETypes specifies a list of MIME Types that will be
+	// processed.  An empty list means all types are allowed.
+	MIMETypes      []string
+	
 	// DefaultBaseURL is the URL that relative remote URLs are resolved in
 	// reference to.  If nil, all remote URLs specified in requests must be
 	// absolute.
